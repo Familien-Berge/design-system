@@ -190,7 +190,8 @@ export function AppShell({
   return (
     <SidebarProvider>
       <ShellSidebar brand={brand} nav={nav} footerNav={footerNav} footer={footer} isActive={isActive} Link={linkComponent} />
-      <SidebarInset>
+      {/* min-w-0: a wide table scrolls in its own box instead of widening the page. */}
+      <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur">
           <SidebarTrigger />
           {/* The sidebar (and with it the app's name) is hidden on phones until opened. */}
