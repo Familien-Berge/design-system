@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, Area, AreaChart, XAxis, YAxis } from "recharts";
 import { Fuel, Gauge, Wallet, Zap } from "lucide-react";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ChartCard, ChartTable, chartDefaults, seriesConfig } from "@/components/charts";
+import { ChartCard, ChartTable, chartDefaults, seriesConfig } from "@/components/chart-kit";
 import { Sparkline } from "@/components/sparkline";
 import { StatGrid, StatTile } from "@/components/stat-tile";
-import { formatCompact, formatCurrency, formatDate, formatNumber } from "@/lib/format";
+import { formatCompact, formatCurrency, formatDate, formatNumber } from "@/lib/locale-format";
 import { consumption, fuelPrices, monthCosts } from "./sample-data";
 
 const meta: Meta = { title: "Blocks/Charts" };

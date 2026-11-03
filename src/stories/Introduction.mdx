@@ -74,7 +74,7 @@ invisible `::after`, so nothing moves. Don't use it on elements that already dra
 ## Charts
 
 Recharts 3 through `@slopdock/chart` (shadcn's chart API: `ChartContainer`, `ChartTooltipContent`,
-`ChartLegendContent`) and `@slopdock/charts` (the house conventions). No per-app chart theme needed:
+`ChartLegendContent`) and `@slopdock/chart-kit` (the house conventions). No per-app chart theme needed:
 
 - **Colours**: `seriesConfig({ fuel: "Drivstoff", service: "Verksted" })` gives each series the next `--chart-N` in key
   order, available as `var(--color-fuel)` inside the chart. List every series the chart can show, once, so hiding one
@@ -82,7 +82,7 @@ Recharts 3 through `@slopdock/chart` (shadcn's chart API: `ChartContainer`, `Cha
 - **Marks**: spread `chartDefaults.grid / xAxis / yAxis / bar / segment / segmentTop / line / area`: 24px-max bars with a
   4px rounded end, 2px gaps between stacked segments, 2px lines, horizontal hairlines only.
 - **Size** with classes, not pixel props: `<ChartContainer className="aspect-auto h-56 md:h-72">`.
-- **Numbers**: `@slopdock/format` (`formatCompact` for ticks, `formatCurrency` / `formatNumber` / `formatDate` for
+- **Numbers**: `@slopdock/locale-format` (`formatCompact` for ticks, `formatCurrency` / `formatNumber` / `formatDate` for
   tooltips and tables), nb-NO by default.
 - **Accessibility**: wrap the chart in `ChartCard` with `table={<ChartTable … />}` — the chart/table switch is how a
   screen-reader or colour-blind reader gets the exact numbers. A legend for two or more series, none for one.

@@ -15,8 +15,8 @@ import { StatGrid, StatTile } from "@/components/stat-tile";
 import { StatusDot, StatusPill, toneClass } from "@/components/status";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ChartCard, ChartTable, chartDefaults, seriesConfig } from "@/components/charts";
-import { formatCompact, formatCurrency, formatDate } from "@/lib/format";
+import { ChartCard, ChartTable, chartDefaults, seriesConfig } from "@/components/chart-kit";
+import { formatCompact, formatCurrency, formatDate } from "@/lib/locale-format";
 import { apps, consumption, fills, monthCosts, type App, type Fill } from "./sample-data";
 
 /** A whole app built only from the registry: what drivstoff / ladelaug / ynab would look like. */

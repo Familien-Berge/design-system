@@ -1,7 +1,7 @@
 // Recharts, themed. API-compatible with shadcn/ui's chart (ChartContainer, ChartConfig,
 // ChartTooltipContent, ChartLegendContent), so shadcn's docs and examples apply. slopdock additions:
 // grid/axis/cursor colours from the theme's chart tokens, `valueFormatter` on the tooltip, and
-// tabular figures for values. Conventions (mark sizes, presets, ChartCard) live in charts.tsx.
+// tabular figures for values. Conventions (mark sizes, presets, ChartCard) live in chart-kit.tsx.
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cn } from "cn";

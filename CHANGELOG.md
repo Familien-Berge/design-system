@@ -8,11 +8,18 @@ the latest. An app's `src/theme.css` starts with the version it was installed fr
 - **minor**: new items, props or tokens.
 - **patch**: fixes and visual tweaks within the same API.
 
+## 1.1.0 — 2026-11-03
+
+- Renamed two items before any app installed them, because apps already have files with those
+  names: `format` → `locale-format` (`@/lib/locale-format`), `charts` → `chart-kit`
+  (`@/components/chart-kit`). An app's own `lib/format.ts` / `components/charts.tsx` are no longer
+  overwritten by `starter`.
+
 ## 1.0.0 — 2026-11-03
 
 First versioned release.
 
-- **Charts**: `ui/chart` (Recharts 3, shadcn's chart API), `charts` (`ChartCard` with chart/table
+- **Charts**: `ui/chart` (Recharts 3, shadcn's chart API), `chart-kit` (`ChartCard` with chart/table
   switch, `ChartTable`, `seriesConfig`, `chartDefaults`), `sparkline`, `StatTile` `trend`.
 - **Tokens**: `--chart-1…8` (validated categorical palette, light + dark) replace the unused greys;
   `--tone-green/blue/violet/amber/red/gray` (+ `success`/`info`/`warning`) replace raw Tailwind hues
@@ -20,7 +27,7 @@ First versioned release.
   `--muted-foreground`, `--sidebar-ring` now meet WCAG; dark `--sidebar-primary` neutral;
   `color-scheme` per theme.
 - **New**: `form-dialog` (`FormDialog`, `ConfirmDialog`), `field`, `checkbox`, `radio-group`,
-  `progress` (`Progress`, `Meter`), `ErrorState`, `lib/format`, `lib/labels` (`LabelsProvider`,
+  `progress` (`Progress`, `Meter`), `ErrorState`, `lib/locale-format`, `lib/labels` (`LabelsProvider`,
   `en`, `nb`).
 - **DataTable**: `loading`, `error`, `onRetry`; clickable rows/cards are `role="button"`; `empty`
   defaults to the labels.
