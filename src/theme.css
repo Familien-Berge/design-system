@@ -137,3 +137,14 @@
     @apply font-sans;
     }
 }
+
+/* Small inline links and icon links: a hit area of at least 24px on touch screens without moving
+   anything (an invisible ::after overlay). Not for elements that already use ::after. */
+@utility tap-target {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -0.375rem -0.25rem;
+  }
+}

@@ -60,6 +60,9 @@ load (next-themes' own script never runs in a client-rendered app):
 
 `AppShell`'s `linkComponent` must pass its other props on to the `<a>` (active row and badges depend on them).
 
+Small inline links (a commit sha, a URL, an icon link) get `tap-target`: a 24px+ hit area on touch screens from an
+invisible `::after`, so nothing moves. Don't use it on elements that already draw with `::after`.
+
 **Updating**: re-run `shadcn add @slopdock/<item> --overwrite` and review the diff; local changes are yours to keep.
 
 ## Where things live
