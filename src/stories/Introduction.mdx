@@ -1,0 +1,70 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# slopdock design system
+
+The look of slopdock, shared with the other apps it hosts: shadcn/ui (radix-nova style),
+a neutral OKLCH palette in light and dark, Geist, and a handful of blocks built on top.
+
+- **Foundations**: colours, type, radius. Colour means status; the only other hue is `--brand`, each app's accent.
+- **Blocks**: app shell (sidebar → sheet on phones), status dots/pills, stat tiles, empty state, data table (table on
+  desktop, cards on phones).
+- **Examples → App**: a whole app made only from these pieces. Try the Phone stories and the Theme / Brand toolbar.
+- **Primitives**: the shadcn components exactly as slopdock uses them.
+
+## Use it in an app
+
+Components are **copied into the app** (shadcn registry), not installed as a package: no private npm, no build-time
+dependency on this repo. This site serves the registry at `/r/{name}.json`.
+
+Needs React 19 and Tailwind 4 (`@tailwindcss/vite`), and an `@/` alias to `src/`. Then add to `components.json`:
+
+```json
+{
+  "style": "radix-nova",
+  "tailwind": { "css": "src/index.css", "baseColor": "neutral", "cssVariables": true },
+  "aliases": { "components": "@/components", "ui": "@/components/ui", "lib": "@/lib", "hooks": "@/hooks", "utils": "@/lib/utils" },
+  "registries": { "@slopdock": "https://familien-berge.github.io/design-system/r/{name}.json" }
+}
+```
+
+```sh
+pnpm dlx shadcn add @slopdock/starter       # theme + every primitive + every block
+pnpm dlx shadcn add @slopdock/data-table    # or one item and what it needs
+```
+
+`src/index.css`:
+
+```css
+@import "tailwindcss";
+@import "./theme.css";
+
+:root { --brand: #3d5afe; --brand-foreground: #fff; } /* optional app accent */
+```
+
+Wrap the app in `ThemeProvider` (next-themes: `attribute="class"`, `scriptProps={{ type: "application/json" }}`)
+and `TooltipProvider`, and add `<Toaster />`. Put this in the app's `<head>`, or dark-mode users see a light flash on
+load (next-themes' own script never runs in a client-rendered app):
+
+```html
+<script>
+  try {
+    var t = localStorage.getItem("theme") || "dark";
+    if (t === "system") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.classList.add(t);
+    document.documentElement.style.colorScheme = t;
+  } catch (e) {}
+</script>
+```
+
+`AppShell`'s `linkComponent` must pass its other props on to the `<a>` (active row and badges depend on them).
+
+**Updating**: re-run `shadcn add @slopdock/<item> --overwrite` and review the diff; local changes are yours to keep.
+
+## Where things live
+
+- Source: [Familien-Berge/design-system](https://github.com/Familien-Berge/design-system). Every file in `src/`
+  (theme, `components/ui` primitives, `lib`, `hooks`, blocks in `components`) is one registry item.
+- slopdock is a consumer like the others: change a component here, then `shadcn add --overwrite` it there.
+- `pnpm registry` regenerates `registry.json` and `public/r`; pushing to `main` deploys this site.
