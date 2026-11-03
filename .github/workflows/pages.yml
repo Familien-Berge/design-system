@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # tags the release when package.json's version is new
   pages: write
   id-token: write
 
@@ -35,6 +35,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm build-storybook
+      - name: Tag the release (package.json version without a tag yet)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          v="v$(node -p "require('./package.json').version")"
+          if ! git rev-parse -q --verify "refs/tags/$v" >/dev/null; then
+            git tag "$v" && git push origin "$v" && echo "tagged $v"
+          fi
       - name: Versioned registries (one per release tag)
         run: |
           for tag in $(git tag -l 'v*'); do

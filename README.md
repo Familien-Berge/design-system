@@ -33,8 +33,8 @@ version:
 
 `head -1 src/theme.css` in an app says which version it has. What changed: [CHANGELOG.md](CHANGELOG.md).
 
-**Releasing**: bump `version` in `package.json`, add a CHANGELOG entry, commit, then
-`git tag vX.Y.Z && git push origin vX.Y.Z main`.
+**Releasing**: bump `version` in `package.json`, add a CHANGELOG entry, push to `main`. CI tags
+`vX.Y.Z` (if that tag doesn't exist yet) and publishes it next to latest.
 
 ## Develop
 
