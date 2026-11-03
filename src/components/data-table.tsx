@@ -95,8 +95,9 @@ export function DataTable<T>({
   const sorted = controlled ? rows : local.rows;
   const setSort = (next: SortState<string> | null) => (controlled ? onSortChange?.(next) : local.setSort(next));
   // First click sorts the column's way, the second reverses it, the third goes back to the default order.
+  const firstDir = (key: string) => columns.find((c) => c.key === key)?.sortFirst ?? "asc";
   const toggle = (key: string) => {
-    const first = columns.find((c) => c.key === key)?.sortFirst ?? "asc";
+    const first = firstDir(key);
     setSort(sort?.key !== key ? { key, dir: first } : sort.dir === first ? { key, dir: first === "asc" ? "desc" : "asc" } : null);
   };
 
@@ -111,7 +112,7 @@ export function DataTable<T>({
       <div className={cn("grid gap-3", className)}>
         {Object.keys(labels).length > 0 && (
           <div className="flex justify-end">
-            <SortSelect labels={labels} sort={sort} onChange={setSort} defaultLabel={defaultSortLabel} />
+            <SortSelect labels={labels} sort={sort} onChange={setSort} defaultLabel={defaultSortLabel} firstDir={firstDir} />
           </div>
         )}
         <ul className="grid gap-3">

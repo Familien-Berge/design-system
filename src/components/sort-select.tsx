@@ -9,16 +9,19 @@ export function SortSelect<K extends string>({
   sort,
   onChange,
   defaultLabel = "Default order",
+  firstDir,
 }: {
   labels: Partial<Record<K, string>>;
   sort: SortState<K> | null;
   onChange: (sort: SortState<K> | null) => void;
   defaultLabel?: string;
+  /** Direction a newly picked column starts in, as on a first header click. Defaults to ascending. */
+  firstDir?: (key: K) => SortState<K>["dir"];
 }) {
   const dir = sort?.dir ?? "asc";
   return (
     <div className="flex items-center gap-1">
-      <Select value={sort?.key ?? "default"} onValueChange={(v) => onChange(v === "default" ? null : { key: v as K, dir })}>
+      <Select value={sort?.key ?? "default"} onValueChange={(v) => onChange(v === "default" ? null : { key: v as K, dir: firstDir?.(v as K) ?? "asc" })}>
         <SelectTrigger size="sm" className="w-36">
           <SelectValue />
         </SelectTrigger>
