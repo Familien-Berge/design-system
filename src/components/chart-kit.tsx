@@ -65,7 +65,7 @@ type SeriesEntry = React.ReactNode | { label: React.ReactNode; color: string };
  */
 export function seriesConfig<K extends string>(series: Record<K, SeriesEntry>): ChartConfig & Record<K, ChartConfig[string]> {
   const entries = Object.entries(series) as [K, SeriesEntry][];
-  if (entries.length > 8 && process.env.NODE_ENV !== "production")
+  if (entries.length > 8)
     console.warn(`seriesConfig: ${entries.length} series; the palette has 8. Fold the rest into "Other".`);
   let slot = 0;
   return Object.fromEntries(

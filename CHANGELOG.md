@@ -8,6 +8,11 @@ the latest. An app's `src/theme.css` starts with the version it was installed fr
 - **minor**: new items, props or tokens.
 - **patch**: fixes and visual tweaks within the same API.
 
+## 1.1.1 — 2026-11-03
+
+- `sparkline` and `chart-kit` compile in apps targeting ES2022 without Node types (no
+  `findLastIndex`, no `process.env`).
+
 ## 1.1.0 — 2026-11-03
 
 - Renamed two items before any app installed them, because apps already have files with those

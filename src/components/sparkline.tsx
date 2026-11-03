@@ -50,7 +50,8 @@ export function Sparkline({
   data.forEach((v, i) => (v === null || !Number.isFinite(v) ? flush() : run.push([x(i), y(v)])));
   flush();
 
-  const last = data.findLastIndex((v) => v !== null && Number.isFinite(v));
+  let last = data.length - 1; // ES2022-safe findLastIndex
+  while (last > 0 && (data[last] === null || !Number.isFinite(data[last]))) last--;
   const lastX = (x(last) / W) * 100;
   const lastY = (y(data[last]!) / H) * 100;
 
