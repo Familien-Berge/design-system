@@ -12,8 +12,12 @@ import { AppShell, PageContent, PageHeader, type ShellLink } from "@/components/
 import { DataTable, type Column } from "@/components/data-table";
 import { EmptyState } from "@/components/empty-state";
 import { StatGrid, StatTile } from "@/components/stat-tile";
-import { StatusDot, StatusPill } from "@/components/status";
-import { apps, fills, type App, type Fill } from "./sample-data";
+import { StatusDot, StatusPill, toneClass } from "@/components/status";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartCard, ChartTable, chartDefaults, seriesConfig } from "@/components/charts";
+import { formatCompact, formatCurrency, formatDate } from "@/lib/format";
+import { apps, consumption, fills, monthCosts, type App, type Fill } from "./sample-data";
 
 /** A whole app built only from the registry: what drivstoff / ladelaug / ynab would look like. */
 function ExampleApp({ start = "/oversikt" }: { start?: string }) {
@@ -38,9 +42,9 @@ function ExampleApp({ start = "/oversikt" }: { start?: string }) {
       nav={[
         { href: "/oversikt", label: "Oversikt", icon: LayoutDashboard },
         { href: "/fyllinger", label: "Fyllinger", icon: Fuel },
-        { href: "/service", label: "Service", icon: Wrench, badge: 1, badgeClassName: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
+        { href: "/service", label: "Service", icon: Wrench, badge: 1, badgeClassName: toneClass.amber },
         { href: "/kostnader", label: "Kostnader", icon: Wallet },
-        { href: "/tjenester", label: "Tjenester", icon: Gauge, badge: 1, badgeClassName: "bg-red-500/15 text-red-600 dark:text-red-400" },
+        { href: "/tjenester", label: "Tjenester", icon: Gauge, badge: 1, badgeClassName: toneClass.red },
         { href: "/innstillinger", label: "Innstillinger", icon: Settings },
       ]}
       footerNav={[{ label: "Logg ut", icon: LogOut, onClick: () => toast("Logget ut") }]}
@@ -117,17 +121,54 @@ const fillColumns: Column<Fill>[] = [
   },
 ];
 
+// In an app: its own file, loaded with React.lazy, so Recharts stays out of the first page load.
+const costConfig = seriesConfig({ fuel: "Drivstoff", service: "Verksted", insurance: "Forsikring", tolls: "Bompenger" });
+const kr = (v: unknown) => formatCurrency(Number(v), { decimals: 0 });
+
+function CostChart() {
+  return (
+    <ChartCard
+      title="Kostnader"
+      description="Per måned, siste år"
+      labels={{ chart: "Diagram", table: "Tabell" }}
+      table={<ChartTable data={monthCosts} config={costConfig} x={{ key: "month", label: "Måned", format: (m) => formatDate(`${m}-01`, "month") }} format={kr} />}
+    >
+      <ChartContainer config={costConfig} className="aspect-auto h-56 w-full md:h-64">
+        <BarChart data={monthCosts} margin={chartDefaults.margin}>
+          <CartesianGrid {...chartDefaults.grid} />
+          <XAxis dataKey="month" {...chartDefaults.xAxis} tickFormatter={(m) => formatDate(`${m}-01`, "monthShort")} />
+          <YAxis {...chartDefaults.yAxis} tickFormatter={(v) => formatCompact(v, { scale: 10_000 })} />
+          <ChartTooltip content={<ChartTooltipContent labelFormatter={(l) => formatDate(`${l}-01`, "month")} valueFormatter={kr} />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          <Bar dataKey="fuel" stackId="a" fill="var(--color-fuel)" {...chartDefaults.segment} />
+          <Bar dataKey="service" stackId="a" fill="var(--color-service)" {...chartDefaults.segment} />
+          <Bar dataKey="insurance" stackId="a" fill="var(--color-insurance)" {...chartDefaults.segment} />
+          <Bar dataKey="tolls" stackId="a" fill="var(--color-tolls)" {...chartDefaults.segmentTop} />
+        </BarChart>
+      </ChartContainer>
+    </ChartCard>
+  );
+}
+
 function Overview() {
   return (
     <>
       <PageHeader title="Oversikt" description="Golf 2019 · 84 120 km" />
       <PageContent>
         <StatGrid>
-          <StatTile label="Snittforbruk" value="0,62 l/mil" icon={Fuel} delta={{ value: "4 %", direction: "down", good: true }} sub="30 dager" />
+          <StatTile
+            label="Snittforbruk"
+            value="0,62 l/mil"
+            icon={Fuel}
+            delta={{ value: "4 %", direction: "down", good: true }}
+            sub="30 dager"
+            trend={{ data: consumption.map((c) => c.lPerMil), label: "Forbruk siste 12 måneder" }}
+          />
           <StatTile label="Kostnad i år" value="18 240 kr" icon={Wallet} delta={{ value: "12 %", direction: "up", good: false }} sub="mot i fjor" />
           <StatTile label="Neste service" value="1 880 km" icon={Wrench} sub="eller 12. jan" />
           <StatTile label="Kilometerstand" value="84 120" icon={Gauge} sub="oppdatert i går" />
         </StatGrid>
+        <CostChart />
         <h2 className="mt-2 text-base font-semibold">Siste fyllinger</h2>
         <DataTable columns={fillColumns} rows={fills.slice(0, 3)} rowKey={(f) => f.iso} onRowClick={(f) => toast(f.station)} />
       </PageContent>

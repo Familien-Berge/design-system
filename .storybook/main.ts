@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.tsx"],
-  addons: ["@storybook/addon-docs"],
+  addons: ["@storybook/addon-docs", "@storybook/addon-a11y"],
   framework: "@storybook/react-vite",
   // The built registry (public/r/*.json) is served next to the stories, so this site is also
   // what `shadcn add @slopdock/…` installs from.

@@ -7,9 +7,10 @@ import { Meta } from "@storybook/addon-docs/blocks";
 The look of slopdock, shared with the other apps it hosts: shadcn/ui (radix-nova style),
 a neutral OKLCH palette in light and dark, Geist, and a handful of blocks built on top.
 
-- **Foundations**: colours, type, radius. Colour means status; the only other hue is `--brand`, each app's accent.
-- **Blocks**: app shell (sidebar → sheet on phones), status dots/pills, stat tiles, empty state, data table (table on
-  desktop, cards on phones).
+- **Foundations**: colours, type, radius. In the UI chrome colour means status (`--tone-*`); the only other hue is
+  `--brand`, each app's accent. Charts have their own eight series colours (`--chart-1…8`).
+- **Blocks**: app shell (sidebar → sheet on phones), status dots/pills, stat tiles (with sparklines), empty state, data
+  table (table on desktop, cards on phones), charts.
 - **Examples → App**: a whole app made only from these pieces. Try the Phone stories and the Theme / Brand toolbar.
 - **Primitives**: the shadcn components exactly as slopdock uses them.
 
@@ -62,6 +63,28 @@ load (next-themes' own script never runs in a client-rendered app):
 
 Small inline links (a commit sha, a URL, an icon link) get `tap-target`: a 24px+ hit area on touch screens from an
 invisible `::after`, so nothing moves. Don't use it on elements that already draw with `::after`.
+
+## Charts
+
+Recharts 3 through `@slopdock/chart` (shadcn's chart API: `ChartContainer`, `ChartTooltipContent`,
+`ChartLegendContent`) and `@slopdock/charts` (the house conventions). No per-app chart theme needed:
+
+- **Colours**: `seriesConfig({ fuel: "Drivstoff", service: "Verksted" })` gives each series the next `--chart-N` in key
+  order, available as `var(--color-fuel)` inside the chart. List every series the chart can show, once, so hiding one
+  never repaints the rest. A grey "Other": `{ other: { label: "Annet", color: "var(--muted-foreground)" } }`.
+- **Marks**: spread `chartDefaults.grid / xAxis / yAxis / bar / segment / segmentTop / line / area`: 24px-max bars with a
+  4px rounded end, 2px gaps between stacked segments, 2px lines, horizontal hairlines only.
+- **Size** with classes, not pixel props: `<ChartContainer className="aspect-auto h-56 md:h-72">`.
+- **Numbers**: `@slopdock/format` (`formatCompact` for ticks, `formatCurrency` / `formatNumber` / `formatDate` for
+  tooltips and tables), nb-NO by default.
+- **Accessibility**: wrap the chart in `ChartCard` with `table={<ChartTable … />}` — the chart/table switch is how a
+  screen-reader or colour-blind reader gets the exact numbers. A legend for two or more series, none for one.
+- **Don't**: two y-axes (make two charts), status tones as series colours, series colours on text.
+- Keep the Recharts code in a lazy-loaded component so it stays out of the first page load. `Sparkline` (plain SVG) and
+  `StatTile`'s `trend` don't load Recharts at all.
+
+Migrating: kjoretoylogg's `--series-1…5` are now `--chart-1…5` (same values); ha-load-balancer's `--good`, `--warning` and
+`--critical` map to `--tone-green`, `--tone-amber` and `--tone-red`.
 
 **Updating**: re-run `shadcn add @slopdock/<item> --overwrite` and review the diff; local changes are yours to keep.
 

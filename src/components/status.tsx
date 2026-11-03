@@ -4,26 +4,30 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 /**
  * Status colours. These are the only hues outside the neutral theme: green ok, blue in progress,
- * violet waiting on a person, amber needs attention, red broken, gray unknown/inactive.
+ * violet waiting on a person, amber needs attention, red broken, gray unknown/inactive. Each is a
+ * theme token (--tone-*), so apps, sidebar badges and charts' status marks all share one value.
+ * Never use a tone as a chart series colour; series use --chart-1…8.
  */
 export type Tone = "green" | "blue" | "violet" | "amber" | "red" | "gray";
 
+/** Tinted background + text in the tone: pills, badges, round icons. */
 export const toneClass: Record<Tone, string> = {
-  green: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-  blue: "bg-sky-500/10 text-sky-700 dark:text-sky-400",
-  violet: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
-  amber: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  red: "bg-red-500/10 text-red-700 dark:text-red-400",
+  green: "bg-tone-green/10 text-tone-green",
+  blue: "bg-tone-blue/10 text-tone-blue",
+  violet: "bg-tone-violet/10 text-tone-violet",
+  amber: "bg-tone-amber/10 text-tone-amber",
+  red: "bg-tone-red/10 text-tone-red",
   gray: "bg-muted text-muted-foreground",
 };
 
+/** Solid fill in the tone: dots and other small marks. */
 export const dotClass: Record<Tone, string> = {
-  green: "bg-emerald-500",
-  blue: "bg-sky-500",
-  violet: "bg-violet-500",
-  amber: "bg-amber-500",
-  red: "bg-red-500",
-  gray: "bg-zinc-400 dark:bg-zinc-600",
+  green: "bg-tone-green",
+  blue: "bg-tone-blue",
+  violet: "bg-tone-violet",
+  amber: "bg-tone-amber",
+  red: "bg-tone-red",
+  gray: "bg-tone-gray",
 };
 
 /** Small coloured dot. `pulse` for in-progress, `ping` for something that is down right now. */

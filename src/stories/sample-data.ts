@@ -31,3 +31,38 @@ export const apps: App[] = [
   { name: "ynab-auto-sync", url: "ynab.example.com", version: "3.0.1", tone: "amber", state: "Out of sync", uptime: 99.4 },
   { name: "ha-load-balancer", url: "last.example.com", version: "1.2.0", tone: "red", state: "Unhealthy", uptime: 97.2 },
 ];
+
+/** Car costs per month, kr, by category: a stacked bar. */
+export interface MonthCost {
+  month: string;
+  fuel: number;
+  service: number;
+  insurance: number;
+  tolls: number;
+  other: number;
+}
+
+export const monthCosts: MonthCost[] = [
+  ["2025-12", 1840, 0, 812, 410, 0],
+  ["2026-01", 2210, 0, 812, 455, 120],
+  ["2026-02", 1980, 3450, 812, 390, 0],
+  ["2026-03", 2105, 0, 812, 470, 0],
+  ["2026-04", 2320, 0, 812, 505, 640],
+  ["2026-05", 2480, 0, 812, 520, 0],
+  ["2026-06", 2890, 0, 812, 610, 210],
+  ["2026-07", 3310, 0, 812, 380, 0],
+  ["2026-08", 2560, 6120, 812, 540, 0],
+  ["2026-09", 2240, 0, 812, 498, 95],
+  ["2026-10", 2390, 0, 812, 515, 0],
+  ["2026-11", 1610, 0, 812, 260, 0],
+].map(([month, fuel, service, insurance, tolls, other]) => ({ month, fuel, service, insurance, tolls, other }) as MonthCost);
+
+/** Pump price per litre, kr, two fuels: a two-series line. */
+export const fuelPrices = Array.from({ length: 30 }, (_, i) => {
+  const day = new Date(Date.UTC(2026, 9, 5 + i));
+  const wave = Math.sin(i / 3.2) * 0.35 + (i / 30) * 0.4;
+  return { date: day.toISOString().slice(0, 10), petrol: +(19.6 + wave).toFixed(2), diesel: +(18.4 + wave * 0.8 - 0.1).toFixed(2) };
+});
+
+/** Fuel consumption per month, l/mil: a single-series bar. */
+export const consumption = monthCosts.map((m, i) => ({ month: m.month, lPerMil: +(0.58 + Math.sin(i / 2) * 0.05 + (i % 3) * 0.01).toFixed(2) }));

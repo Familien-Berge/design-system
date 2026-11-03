@@ -45,6 +45,59 @@ export const Colors: Story = {
   ),
 };
 
+const tones = [
+  ["tone-green", "OK"],
+  ["tone-blue", "In progress"],
+  ["tone-violet", "Waiting on someone"],
+  ["tone-amber", "Needs attention"],
+  ["tone-red", "Broken (= destructive)"],
+  ["tone-gray", "Unknown / inactive"],
+] as const;
+
+const series = ["blue", "orange", "aqua", "yellow", "magenta", "green", "violet", "red"];
+
+export const StatusAndChartColors: Story = {
+  name: "Status & chart colours",
+  render: () => (
+    <div className="grid max-w-3xl gap-8">
+      <section className="grid gap-3">
+        <h2 className="text-base font-semibold">Status tones</h2>
+        <p className="max-w-prose text-sm text-muted-foreground">
+          The only hues in the UI chrome. One token per tone, readable as text on its own <code>/10</code> tint and as a dot.
+          Tailwind: <code>text-tone-amber</code>, <code>bg-tone-amber/10</code>; aliases <code>success</code>, <code>info</code>,{" "}
+          <code>warning</code>. Always with an icon or a label, never colour alone.
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {tones.map(([t, label]) => (
+            <div key={t} className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium" style={{ background: `color-mix(in oklab, var(--${t}) 10%, transparent)`, color: `var(--${t})` }}>
+              <span className="size-2.5 rounded-full" style={{ background: `var(--${t})` }} />
+              {label}
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="grid gap-3">
+        <h2 className="text-base font-semibold">Chart series</h2>
+        <p className="max-w-prose text-sm text-muted-foreground">
+          <code>--chart-1</code> to <code>--chart-8</code>, handed out in this order (<code>seriesConfig</code>) and never by
+          rank. Light and dark are separately chosen steps of the same hues, checked as a set for colour-blind separation. Not
+          for text and not for status.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {series.map((name, i) => (
+            <div key={name} className="grid w-20 gap-1">
+              <div className="h-10 rounded-md" style={{ background: `var(--chart-${i + 1})` }} />
+              <code className="text-[11px] text-muted-foreground">
+                {i + 1} · {name}
+              </code>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  ),
+};
+
 export const Typography: Story = {
   render: () => (
     <div className="grid max-w-2xl gap-4">

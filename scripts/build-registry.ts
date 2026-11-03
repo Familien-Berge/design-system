@@ -36,6 +36,10 @@ const blockInfo: Record<string, string> = {
   "data-table": "Sortable table on desktop, labelled cards on phones.",
   "sortable-head": "Table header cell that sorts its column.",
   "sort-select": "Sort picker for card lists on phones.",
+  charts: "ChartCard (chart/table switch), seriesConfig, ChartTable and mark presets for Recharts charts.",
+  sparkline: "Tiny trend line in plain SVG, for stat tiles and table cells.",
+  chart: "Recharts, themed (shadcn chart API): ChartContainer, tooltip and legend.",
+  format: "nb-NO number, currency, percent, compact (axis) and date formatting.",
 };
 
 const dep = (spec: string) => {
@@ -77,14 +81,13 @@ const items: Item[] = [
     name: "theme",
     type: "registry:file",
     title: "slopdock theme",
-    description: "Neutral OKLCH tokens (light + dark), Geist, base layer, and a --brand accent hook.",
+    description: "Neutral OKLCH tokens (light + dark), status tones, chart series colours, Geist, base layer, and a --brand accent hook.",
     dependencies: ["tw-animate-css", "shadcn", "@fontsource-variable/geist"].map((d) => dep(d)!),
     files: [{ path: staged("src/theme.css", "registry:file"), type: "registry:file", target: "src/theme.css" }],
     docs: 'Make src/index.css: @import "tailwindcss"; @import "./theme.css"; then optionally override --brand / --brand-foreground in :root (and .dark).',
   },
-  item("src/lib/utils.ts", "registry:lib"),
-  item("src/lib/sort.ts", "registry:lib"),
-  item("src/hooks/use-mobile.ts", "registry:hook"),
+  ...tsx("src/lib").map((f) => item(f, "registry:lib")),
+  ...tsx("src/hooks").map((f) => item(f, "registry:hook")),
   ...tsx("src/components/ui").map((f) => item(f, "registry:ui")),
   ...tsx("src/components").map((f) => item(f, "registry:component")),
 ];
