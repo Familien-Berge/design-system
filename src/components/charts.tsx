@@ -4,6 +4,7 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import type { ChartConfig } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useLabels } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 
 /*
@@ -87,7 +88,7 @@ export function ChartCard({
   description,
   action,
   table,
-  labels = { chart: "Chart", table: "Table" },
+  labels: labelsProp,
   className,
   children,
 }: {
@@ -97,12 +98,14 @@ export function ChartCard({
   action?: React.ReactNode;
   /** The chart's data as a table, usually a ChartTable. Adds the chart/table switch. */
   table?: React.ReactNode;
-  /** Accessible names of the two views. */
+  /** Accessible names of the two views; default from LabelsProvider. */
   labels?: { chart: string; table: string };
   className?: string;
   children: React.ReactNode;
 }) {
   const [view, setView] = React.useState<"chart" | "table">("chart");
+  const ctx = useLabels();
+  const labels = labelsProp ?? { chart: ctx.chart, table: ctx.table };
   return (
     <Card className={cn("min-w-0", className)}>
       <CardHeader>

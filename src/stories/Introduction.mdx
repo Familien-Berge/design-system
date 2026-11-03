@@ -59,6 +59,13 @@ load (next-themes' own script never runs in a client-rendered app):
 </script>
 ```
 
+Norwegian app? Wrap it in `<LabelsProvider labels={nb}>` (`@slopdock/labels`): close buttons, empty and error
+states, the sort picker and the theme toggle then speak Norwegian.
+
+Forms: `FormDialog` (a bottom sheet on phones; only the body scrolls) with `Field` rows, `ConfirmDialog` before
+deleting, `DataTable`'s `loading` / `error` while data is on its way. Dates: a plain `<Input type="date">` — the
+theme sets `color-scheme`, so the native picker follows light/dark.
+
 `AppShell`'s `linkComponent` must pass its other props on to the `<a>` (active row and badges depend on them).
 
 Small inline links (a commit sha, a URL, an icon link) get `tap-target`: a 24px+ hit area on touch screens from an
@@ -87,6 +94,7 @@ Migrating: kjoretoylogg's `--series-1…5` are now `--chart-1…5` (same values)
 `--critical` map to `--tone-green`, `--tone-amber` and `--tone-red`.
 
 **Updating**: re-run `shadcn add @slopdock/<item> --overwrite` and review the diff; local changes are yours to keep.
+Versions, pinning and what changed: README and CHANGELOG in the repo; `head -1 src/theme.css` shows an app's version.
 
 ## Where things live
 

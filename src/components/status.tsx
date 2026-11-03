@@ -49,7 +49,9 @@ export function StatusDot({
     <span
       role={label ? "img" : undefined}
       aria-label={label}
-      className={cn("relative inline-flex size-2.5 shrink-0 rounded-full", dotClass[tone], pulse && "animate-pulse", className)}
+      // Focusable when labelled, so keyboard users can open the tooltip too.
+      tabIndex={label ? 0 : undefined}
+      className={cn("relative inline-flex size-2.5 shrink-0 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50", dotClass[tone], pulse && "animate-pulse", className)}
     >
       {ping && <span className={cn("absolute inset-0 animate-ping rounded-full opacity-60", dotClass[tone])} />}
     </span>

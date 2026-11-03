@@ -18,6 +18,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLabels } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 
 /**
@@ -160,11 +161,13 @@ function ShellSidebar({
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === "dark";
+  const labels = useLabels();
   return (
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label={dark ? "Light mode" : "Dark mode"}
+      aria-label={dark ? labels.lightMode : labels.darkMode}
+      title={dark ? labels.lightMode : labels.darkMode}
       onClick={() => setTheme(dark ? "light" : "dark")}
     >
       {dark ? <Sun /> : <Moon />}
@@ -187,13 +190,14 @@ export function AppShell({
   linkComponent = PlainLink,
   children,
 }: AppShellProps) {
+  const labels = useLabels();
   return (
     <SidebarProvider>
       <ShellSidebar brand={brand} nav={nav} footerNav={footerNav} footer={footer} isActive={isActive} Link={linkComponent} />
       {/* min-w-0: a wide table scrolls in its own box instead of widening the page. */}
       <SidebarInset className="min-w-0">
         <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur">
-          <SidebarTrigger />
+          <SidebarTrigger label={labels.toggleSidebar} />
           {/* The sidebar (and with it the app's name) is hidden on phones until opened. */}
           <span className="truncate text-sm font-semibold md:hidden">{brand.name}</span>
           {topbar}

@@ -18,7 +18,23 @@ pnpm dlx shadcn add @slopdock/starter              # theme + all primitives + al
 pnpm dlx shadcn add @slopdock/data-table --overwrite  # update one item
 ```
 
-Setup details (ThemeProvider, theme script, palettes): the Introduction page in Storybook.
+Setup details (ThemeProvider, theme script, palettes, charts): the Introduction page in Storybook.
+
+## Versions
+
+Apps follow the **latest** registry by default, so pushing a change out is one
+`shadcn add @slopdock/starter --overwrite` per app (then review the diff). Releases are semver git
+tags; each one stays installable, so an app can **pin** or roll back by pointing its registry at a
+version:
+
+```json
+"registries": { "@slopdock": "https://familien-berge.github.io/design-system/r/v1.0.0/{name}.json" }
+```
+
+`head -1 src/theme.css` in an app says which version it has. What changed: [CHANGELOG.md](CHANGELOG.md).
+
+**Releasing**: bump `version` in `package.json`, add a CHANGELOG entry, commit, then
+`git tag vX.Y.Z && git push origin vX.Y.Z main`.
 
 ## Develop
 

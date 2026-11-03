@@ -1,9 +1,14 @@
 name: Deploy
 
-# Storybook + the shadcn registry (/r/{name}.json) on GitHub Pages.
+# Storybook + the shadcn registry on GitHub Pages:
+#   /r/{name}.json          latest (main)       — what apps install by default
+#   /r/vX.Y.Z/{name}.json   one per release tag — for pinning / rolling back an app
+# Pull requests build and typecheck but don't deploy.
 on:
   push:
     branches: [main]
+    tags: ["v*"]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -12,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -20,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the release tags, for the versioned registries
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -28,11 +35,22 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm build-storybook
+      - name: Versioned registries (one per release tag)
+        run: |
+          for tag in $(git tag -l 'v*'); do
+            git worktree add -q "../rel-$tag" "$tag"
+            (cd "../rel-$tag" && pnpm install --frozen-lockfile --silent && pnpm -s registry >/dev/null)
+            mkdir -p "storybook-static/r/$tag"
+            cp -r "../rel-$tag/public/r/." "storybook-static/r/$tag/"
+            echo "registry $tag: $(ls "storybook-static/r/$tag" | wc -l) items"
+          done
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
         with:
           path: storybook-static
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

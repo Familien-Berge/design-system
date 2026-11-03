@@ -15,7 +15,19 @@ const staged = (file: string, type: string) => {
   return to;
 };
 
-const pkgVersions: Record<string, string> = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).dependencies;
+// theme.css carries the release on its first line: what `grep @slopdock src/theme.css` in an app
+// answers when asking which version it has.
+function stagedTheme() {
+  const to = staged("src/theme.css", "registry:file");
+  const css = readFileSync(path.join(root, to), "utf8");
+  writeFileSync(path.join(root, to), `/* @slopdock/design-system ${version} (https://familien-berge.github.io/design-system/) */\n${css}`);
+  return to;
+}
+
+const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
+const pkgVersions: Record<string, string> = pkg.dependencies;
+/** The release this registry is built from; stamped into every item and into the app's theme.css. */
+const version: string = pkg.version;
 
 type Item = {
   name: string;
@@ -26,20 +38,27 @@ type Item = {
   registryDependencies?: string[];
   files: { path: string; type: string; target?: string }[];
   docs?: string;
+  meta?: { version: string };
 };
 
 const blockInfo: Record<string, string> = {
   "app-shell": "Sidebar + sticky top bar layout (sheet on phones), ThemeToggle, PageHeader, PageContent.",
   status: "StatusDot, StatusPill, StatusIcon and the six status tones.",
   "stat-tile": "StatTile and StatGrid for key numbers.",
-  "empty-state": "Placeholder card for an empty list.",
-  "data-table": "Sortable table on desktop, labelled cards on phones.",
+  "empty-state": "EmptyState for an empty list, ErrorState (with retry) for a failed load.",
+  "data-table": "Sortable table on desktop, labelled cards on phones; loading and error states.",
   "sortable-head": "Table header cell that sorts its column.",
   "sort-select": "Sort picker for card lists on phones.",
   charts: "ChartCard (chart/table switch), seriesConfig, ChartTable and mark presets for Recharts charts.",
   sparkline: "Tiny trend line in plain SVG, for stat tiles and table cells.",
   chart: "Recharts, themed (shadcn chart API): ChartContainer, tooltip and legend.",
   format: "nb-NO number, currency, percent, compact (axis) and date formatting.",
+  labels: "LabelsProvider, en and nb: the words the components say (close, empty, retry, sort…).",
+  "form-dialog": "FormDialog (bottom sheet on phones, scrolling body, sticky footer) and ConfirmDialog.",
+  field: "Field, FieldLabel, FieldDescription, FieldError, FieldGroup: one form row.",
+  checkbox: "Checkbox (with indeterminate).",
+  "radio-group": "RadioGroup and RadioGroupItem.",
+  progress: "Progress (task progress) and Meter (a value against a limit, toned).",
 };
 
 const dep = (spec: string) => {
@@ -67,6 +86,7 @@ function item(file: string, type: string, name = path.basename(file).replace(/\.
     ...(dependencies.length && { dependencies }),
     ...(registryDependencies.length && { registryDependencies }),
     files: [{ path: staged(file, type), type }],
+    meta: { version },
   };
 }
 
@@ -83,7 +103,8 @@ const items: Item[] = [
     title: "slopdock theme",
     description: "Neutral OKLCH tokens (light + dark), status tones, chart series colours, Geist, base layer, and a --brand accent hook.",
     dependencies: ["tw-animate-css", "shadcn", "@fontsource-variable/geist"].map((d) => dep(d)!),
-    files: [{ path: staged("src/theme.css", "registry:file"), type: "registry:file", target: "src/theme.css" }],
+    files: [{ path: stagedTheme(), type: "registry:file", target: "src/theme.css" }],
+    meta: { version },
     docs: 'Make src/index.css: @import "tailwindcss"; @import "./theme.css"; then optionally override --brand / --brand-foreground in :root (and .dark).',
   },
   ...tsx("src/lib").map((f) => item(f, "registry:lib")),
@@ -99,6 +120,7 @@ items.push({
   description: "Theme, all primitives and all blocks: what an app needs to look like slopdock.",
   registryDependencies: items.map((i) => `@slopdock/${i.name}`),
   files: [],
+  meta: { version },
 });
 
 writeFileSync(
@@ -109,4 +131,4 @@ writeFileSync(
     2,
   ) + "\n",
 );
-console.log(`registry.json: ${items.length} items`);
+console.log(`registry.json: ${items.length} items, v${version}`);

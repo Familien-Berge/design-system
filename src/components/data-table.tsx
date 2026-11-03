@@ -1,9 +1,12 @@
 import * as React from "react";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorState } from "@/components/empty-state";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SortableHead } from "@/components/sortable-head";
 import { SortSelect } from "@/components/sort-select";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLabels } from "@/lib/labels";
 import { useSort, type SortState, type SortValue } from "@/lib/sort";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +43,13 @@ export interface DataTableProps<T> {
   rowKey: (row: T) => string | number;
   /** Makes rows (and phone cards) clickable and keyboard-focusable. */
   onRowClick?: (row: T) => void;
+  /** Shown when there are no rows. Defaults to the "empty" label; pass an <EmptyState> for more. */
   empty?: React.ReactNode;
+  /** Data still on its way (e.g. SWR's first load): skeleton rows instead of the empty message. */
+  loading?: boolean;
+  /** Loading failed: an error message (and a retry button with `onRetry`) instead of the rows. */
+  error?: React.ReactNode | true;
+  onRetry?: () => void;
   defaultSort?: SortState<string> | null;
   /**
    * Controlled sorting, e.g. when the server sorts: rows are shown in the order given, and
@@ -61,6 +70,7 @@ function clickable<T>(row: T, onRowClick?: (row: T) => void) {
   if (!onRowClick) return {};
   return {
     tabIndex: 0,
+    role: "button" as const,
     onClick: () => onRowClick(row),
     onKeyDown: (e: React.KeyboardEvent) => {
       if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
@@ -80,7 +90,10 @@ export function DataTable<T>({
   rows,
   rowKey,
   onRowClick,
-  empty = "Nothing here yet.",
+  empty,
+  loading = false,
+  error,
+  onRetry,
   defaultSort = null,
   sort: controlledSort,
   onSortChange,
@@ -88,6 +101,7 @@ export function DataTable<T>({
   className,
 }: DataTableProps<T>) {
   const isMobile = useIsMobile();
+  const labels = useLabels();
   const getters = Object.fromEntries(columns.filter((c) => c.sortValue).map((c) => [c.key, c.sortValue!]));
   const local = useSort(rows, getters, defaultSort);
   const controlled = controlledSort !== undefined;
@@ -101,7 +115,21 @@ export function DataTable<T>({
     setSort(sort?.key !== key ? { key, dir: first } : sort.dir === first ? { key, dir: first === "asc" ? "desc" : "asc" } : null);
   };
 
-  if (!rows.length) return <p className="py-12 text-center text-sm text-muted-foreground">{empty}</p>;
+  if (error) return <ErrorState description={error === true ? undefined : error} onRetry={onRetry} className={className} />;
+  if (loading && !rows.length)
+    return (
+      <div role="status" aria-label={labels.loading} className={cn("grid gap-2", className)}>
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-10 w-full" />
+        ))}
+      </div>
+    );
+  if (!rows.length)
+    return typeof empty === "string" || empty === undefined ? (
+      <p className="py-12 text-center text-sm text-muted-foreground">{empty ?? labels.empty}</p>
+    ) : (
+      <>{empty}</>
+    );
 
   if (isMobile) {
     const labels = Object.fromEntries(columns.filter(isSortable).map((c) => [c.key, labelOf(c)]));
