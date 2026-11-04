@@ -205,7 +205,7 @@ export function DataTable<T>({
                 </SortableHead>
               ) : (
                 <TableHead key={c.key} className={cn("text-muted-foreground", i === 0 && "pl-4", c.className)}>
-                  {c.header}
+                  {c.header || <span className="sr-only">{labels.actions}</span>}
                 </TableHead>
               ),
             )}
