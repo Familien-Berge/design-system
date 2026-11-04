@@ -8,6 +8,12 @@ the latest. An app's `src/theme.css` starts with the version it was installed fr
 - **minor**: new items, props or tokens.
 - **patch**: fixes and visual tweaks within the same API.
 
+## 1.2.0 — 2026-11-04
+
+- `labels`: new `actions` word. `DataTable` columns without a header name it for screen readers.
+- `Sidebar`: its contents are a `<nav>` landmark on desktop.
+- `CommandDialog`: its hidden title and description sit inside the dialog, so it has an accessible name.
+
 ## 1.1.1 — 2026-11-03
 
 - `sparkline` and `chart-kit` compile in apps targeting ES2022 without Node types (no
