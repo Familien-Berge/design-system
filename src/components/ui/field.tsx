@@ -61,9 +61,54 @@ function FieldError({ className, children, ...props }: React.ComponentProps<"p">
   )
 }
 
+/**
+ * A labelled control in one go, wiring the label for you. The child gets the id; for a control
+ * made of parts, pass a function and put the id where it belongs. `horizontal` is for a checkbox
+ * or switch, with the label after it.
+ *
+ *   <FormField label="Liter" hint="Fra pumpen."><Input value={v} onChange={...} /></FormField>
+ *   <FormField label="Full tank" orientation="horizontal"><Checkbox /></FormField>
+ *   <FormField label="Drivstoff">{(id) => <Select ...><SelectTrigger id={id}>...</Select>}</FormField>
+ */
+function FormField({
+  label,
+  hint,
+  error,
+  orientation = "vertical",
+  className,
+  children,
+}: {
+  label: React.ReactNode
+  hint?: React.ReactNode
+  error?: React.ReactNode
+  orientation?: "vertical" | "horizontal"
+  className?: string
+  children: React.ReactElement<{ id?: string }> | ((id: string) => React.ReactNode)
+}) {
+  const id = React.useId()
+  const control = typeof children === "function" ? children(id) : React.cloneElement(children, { id })
+  const name = <FieldLabel htmlFor={id}>{label}</FieldLabel>
+  if (orientation === "horizontal") {
+    return (
+      <Field orientation="horizontal" className={cn("justify-start gap-2", className)}>
+        {control}
+        {name}
+      </Field>
+    )
+  }
+  return (
+    <Field className={cn("min-w-0", className)}>
+      {name}
+      {control}
+      {hint && <FieldDescription>{hint}</FieldDescription>}
+      <FieldError>{error}</FieldError>
+    </Field>
+  )
+}
+
 /** Vertical stack of Fields with the house spacing. */
 function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   return <div data-slot="field-group" className={cn("grid gap-4", className)} {...props} />
 }
 
-export { Field, FieldLabel, FieldDescription, FieldError, FieldGroup }
+export { Field, FieldLabel, FieldDescription, FieldError, FieldGroup, FormField }

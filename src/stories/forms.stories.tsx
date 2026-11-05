@@ -3,11 +3,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FormField } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Meter, Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import { Combobox } from "@/components/combobox";
 import { ConfirmDialog, FormDialog } from "@/components/form-dialog";
 import { DataTable, type Column } from "@/components/data-table";
 import { ErrorState } from "@/components/empty-state";
@@ -130,3 +131,29 @@ export const TableStates: Story = {
     </LabelsProvider>
   ),
 };
+
+function ComboboxExample() {
+  const [value, setValue] = useState("");
+  return (
+    <div className="max-w-sm">
+      <FieldGroup>
+        <FormField label="Sensor" hint="Pick one, or type any entity id.">
+          <Combobox
+            value={value}
+            onChange={setValue}
+            options={[
+              { value: "sensor.vvb_power", label: "Water heater" },
+              { value: "sensor.ev_power", label: "EV charger" },
+              { value: "sensor.house_power" },
+            ]}
+          />
+        </FormField>
+        <FormField label="Off in Holiday" orientation="horizontal">
+          <Checkbox />
+        </FormField>
+      </FieldGroup>
+    </div>
+  );
+}
+
+export const ComboboxAndFormField: Story = { render: () => <ComboboxExample /> };

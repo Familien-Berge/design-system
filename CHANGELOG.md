@@ -8,6 +8,11 @@ the latest. An app's `src/theme.css` starts with the version it was installed fr
 - **minor**: new items, props or tokens.
 - **patch**: fixes and visual tweaks within the same API.
 
+## 1.3.0 — 2026-11-05
+
+- New `combobox`: a text field that suggests values as you type, for when any value is allowed.
+- `Field`: new `FormField`, a labelled control with the label wired up for you.
+
 ## 1.2.0 — 2026-11-04
 
 - `labels`: new `actions` word. `DataTable` columns without a header name it for screen readers.
