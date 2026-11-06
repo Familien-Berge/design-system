@@ -25,6 +25,8 @@ export const en = {
   toggleSidebar: "Toggle sidebar",
   chart: "Chart",
   table: "Table",
+  none: "None",
+  of: "of",
 };
 
 export type Labels = typeof en;
@@ -48,6 +50,8 @@ export const nb: Labels = {
   toggleSidebar: "Vis/skjul sidemeny",
   chart: "Diagram",
   table: "Tabell",
+  none: "Ingen",
+  of: "av",
 };
 
 const LabelsContext = React.createContext<Labels>(en);

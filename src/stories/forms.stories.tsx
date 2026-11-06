@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Combobox } from "@/components/combobox";
 import { ConfirmDialog, FormDialog } from "@/components/form-dialog";
+import { MultiSelect } from "@/components/multi-select";
 import { DataTable, type Column } from "@/components/data-table";
 import { ErrorState } from "@/components/empty-state";
 import { LabelsProvider, nb } from "@/lib/labels";
@@ -157,3 +158,24 @@ function ComboboxExample() {
 }
 
 export const ComboboxAndFormField: Story = { render: () => <ComboboxExample /> };
+
+function MultiSelectExample() {
+  const [value, setValue] = useState<string[]>(["shed", "ev"]);
+  return (
+    <MultiSelect
+      aria-label="Type"
+      className="w-40"
+      value={value}
+      onChange={setValue}
+      allLabel="All types"
+      options={[
+        { value: "shed", label: "Shed" },
+        { value: "restore", label: "Restore" },
+        { value: "ev", label: "EV" },
+        { value: "system", label: "System" },
+      ]}
+    />
+  );
+}
+
+export const MultiSelectFilter: Story = { render: () => <MultiSelectExample /> };

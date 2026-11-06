@@ -49,6 +49,7 @@ const blockInfo: Record<string, string> = {
   "data-table": "Sortable table on desktop, labelled cards on phones; loading and error states.",
   "sortable-head": "Table header cell that sorts its column.",
   "sort-select": "Sort picker for card lists on phones.",
+  "multi-select": "Dropdown of checkboxes for filtering on several values.",
   "chart-kit": "ChartCard (chart/table switch), seriesConfig, ChartTable and mark presets for Recharts charts.",
   sparkline: "Tiny trend line in plain SVG, for stat tiles and table cells.",
   chart: "Recharts, themed (shadcn chart API): ChartContainer, tooltip and legend.",

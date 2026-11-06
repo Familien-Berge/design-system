@@ -8,6 +8,11 @@ the latest. An app's `src/theme.css` starts with the version it was installed fr
 - **minor**: new items, props or tokens.
 - **patch**: fixes and visual tweaks within the same API.
 
+## 1.4.0 — 2026-11-06
+
+- New `multi-select`: a dropdown of checkboxes with an All row, for filtering on several values.
+- `labels`: new `none` and `of` words.
+
 ## 1.3.0 — 2026-11-05
 
 - New `combobox`: a text field that suggests values as you type, for when any value is allowed.
